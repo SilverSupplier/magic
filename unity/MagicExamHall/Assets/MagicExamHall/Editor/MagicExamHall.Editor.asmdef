@@ -1,0 +1,18 @@
+{
+  "name": "MagicExamHall.Editor",
+  "rootNamespace": "MagicExamHall.Editor",
+  "references": [
+    "MagicExamHall.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
