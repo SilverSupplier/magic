@@ -30,12 +30,14 @@ namespace MagicExamHall
             if (stationRenderer != null)
             {
                 stationRenderer.sprite = PixelArtFactory.CreateSprite($"{family} Station", color, Color.white, PixelSpriteKind.Station);
+                stationRenderer.sharedMaterial = PixelMaterialProvider.SpriteMaterial;
                 stationRenderer.color = Color.white;
             }
 
             if (targetRenderer != null)
             {
                 targetRenderer.sprite = PixelArtFactory.CreateSprite($"{family} Target", color, new Color(0.45f, 0.48f, 0.54f), PixelSpriteKind.Target);
+                targetRenderer.sharedMaterial = PixelMaterialProvider.SpriteMaterial;
                 targetRenderer.color = Color.white;
             }
 
@@ -62,6 +64,7 @@ namespace MagicExamHall
             if (targetRenderer != null)
             {
                 targetRenderer.sprite = PixelArtFactory.CreateSprite($"{family} Success Target", Color.white, color, PixelSpriteKind.Target);
+                targetRenderer.sharedMaterial = PixelMaterialProvider.SpriteMaterial;
             }
 
             if (targetTransform == null)

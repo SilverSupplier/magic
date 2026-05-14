@@ -280,7 +280,9 @@ namespace MagicExamHall
                 }
                 var t = pulse.age / 0.85f;
                 pulse.body.transform.localScale = Vector3.one * Mathf.Lerp(0.45f, 2.6f, t);
-                pulse.body.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, Mathf.Lerp(0.85f, 0f, t));
+                var pulseRenderer = pulse.body.GetComponent<SpriteRenderer>();
+                pulseRenderer.sharedMaterial = PixelMaterialProvider.SpriteMaterial;
+                pulseRenderer.color = new Color(1f, 1f, 1f, Mathf.Lerp(0.85f, 0f, t));
                 if (t >= 1f)
                 {
                     Destroy(pulse.body);
@@ -546,6 +548,7 @@ namespace MagicExamHall
             rect.sizeDelta = size;
             var image = body.AddComponent<Image>();
             image.color = color;
+            image.material = PixelMaterialProvider.UiMaterial;
             return image;
         }
 
@@ -557,6 +560,7 @@ namespace MagicExamHall
             ApplyAnchor(rect, Anchor.Stretch);
             var surface = body.AddComponent<SpellDrawingCanvas>();
             surface.color = Color.clear;
+            surface.material = PixelMaterialProvider.UiMaterial;
             return surface;
         }
 

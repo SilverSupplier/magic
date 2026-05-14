@@ -13,11 +13,14 @@ namespace MagicExamHall.Editor
     {
         private const string ScenePath = "Assets/Scenes/MagicExamHall.unity";
         private const string PrefabFolder = "Assets/MagicExamHall/Prefabs";
+        private const string ResourcesFolder = "Assets/MagicExamHall/Resources";
+        private const string MaterialFolder = "Assets/MagicExamHall/Resources/MagicExamHallMaterials";
 
         [MenuItem("Magic Exam Hall/Rebuild Demo Scene")]
         public static void BuildAll()
         {
             EnsureFolders();
+            EnsureMaterials();
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             scene.name = "MagicExamHall";
@@ -54,6 +57,44 @@ namespace MagicExamHall.Editor
             if (!AssetDatabase.IsValidFolder(PrefabFolder))
             {
                 AssetDatabase.CreateFolder("Assets/MagicExamHall", "Prefabs");
+            }
+
+            if (!AssetDatabase.IsValidFolder(ResourcesFolder))
+            {
+                AssetDatabase.CreateFolder("Assets/MagicExamHall", "Resources");
+            }
+
+            if (!AssetDatabase.IsValidFolder(MaterialFolder))
+            {
+                AssetDatabase.CreateFolder(ResourcesFolder, "MagicExamHallMaterials");
+            }
+        }
+
+        private static void EnsureMaterials()
+        {
+            CreateOrUpdateMaterial($"{MaterialFolder}/PixelSpriteDefault.mat", "Sprites/Default");
+            CreateOrUpdateMaterial($"{MaterialFolder}/PixelUIDefault.mat", "UI/Default");
+        }
+
+        private static void CreateOrUpdateMaterial(string path, string shaderName)
+        {
+            var shader = Shader.Find(shaderName);
+            if (shader == null)
+            {
+                Debug.LogWarning($"Could not find shader {shaderName}; material {path} was not generated.");
+                return;
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+            {
+                material.shader = shader;
+                EditorUtility.SetDirty(material);
             }
         }
 

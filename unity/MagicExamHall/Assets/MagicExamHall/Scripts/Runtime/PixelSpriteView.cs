@@ -31,6 +31,7 @@ namespace MagicExamHall
         {
             var spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = PixelArtFactory.CreateSprite(name, primary, secondary, kind);
+            spriteRenderer.sharedMaterial = PixelMaterialProvider.SpriteMaterial;
             spriteRenderer.color = Color.white;
             spriteRenderer.sortingOrder = sortingOrder;
             spriteRenderer.drawMode = tiled ? SpriteDrawMode.Tiled : SpriteDrawMode.Simple;
