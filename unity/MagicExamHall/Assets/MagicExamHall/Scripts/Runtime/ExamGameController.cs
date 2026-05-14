@@ -27,7 +27,7 @@ namespace MagicExamHall
         private RectTransform drawPanel = null!;
         private RectTransform resultPanel = null!;
         private RectTransform surveyPanel = null!;
-        private Image progressFill = null!;
+        private Image[] progressPips = Array.Empty<Image>();
         private Text hudTitle = null!;
         private Text hudCopy = null!;
         private Text promptTitle = null!;
@@ -181,7 +181,7 @@ namespace MagicExamHall
             hudPanel = CreatePanel("HUD", canvas.transform, new Vector2(20, -20), new Vector2(540, 120), Anchor.TopLeft);
             hudTitle = CreateText("Title", hudPanel, "마법 시험장", 24, FontStyle.Bold, new Vector2(16, -12), new Vector2(500, 30), Anchor.TopLeft);
             hudCopy = CreateText("Copy", hudPanel, "", 16, FontStyle.Normal, new Vector2(16, -48), new Vector2(500, 48), Anchor.TopLeft);
-            progressFill = CreateProgressBar(hudPanel);
+            progressPips = CreateProgressPips(hudPanel);
 
             promptPanel = CreatePanel("Station Prompt", canvas.transform, new Vector2(-24, -24), new Vector2(400, 142), Anchor.TopRight);
             promptTitle = CreateText("Prompt Title", promptPanel, "", 20, FontStyle.Bold, new Vector2(18, -14), new Vector2(360, 28), Anchor.TopLeft);
@@ -190,7 +190,7 @@ namespace MagicExamHall
 
             drawPanel = CreatePanel("Drawing Panel", canvas.transform, Vector2.zero, new Vector2(920, 560), Anchor.Center);
             CreateText("Drawing Title", drawPanel, "문양 입력", 22, FontStyle.Bold, new Vector2(22, -18), new Vector2(420, 30), Anchor.TopLeft);
-            var drawingBackground = CreateImage("Drawing Surface Background", drawPanel, new Vector2(24, -74), new Vector2(520, 380), Anchor.TopLeft, new Color(0.93f, 0.97f, 1f, 1f));
+            var drawingBackground = CreateImage("Drawing Surface Background", drawPanel, new Vector2(24, -74), new Vector2(520, 380), Anchor.TopLeft, new Color(0.88f, 0.81f, 0.64f, 1f));
             drawingCanvas = CreateDrawingSurface(drawingBackground.rectTransform);
             drawingCanvas.raycastTarget = true;
             resultPanel = CreatePanel("Result Panel", drawPanel, new Vector2(-24, -74), new Vector2(320, 380), Anchor.TopRight);
@@ -308,7 +308,7 @@ namespace MagicExamHall
                 promptPanel.gameObject.SetActive(false);
                 surveyPanel.gameObject.SetActive(true);
             }
-            progressFill.fillAmount = stationViews.Length == 0 ? 0f : activeStationIndex / (float)stationViews.Length;
+            UpdateProgressPips();
         }
 
         private void TryOpenActiveStation()
@@ -501,8 +501,8 @@ namespace MagicExamHall
             return new[]
             {
                 new StationSpec(SpellFamily.Fire, new Vector2(-5.5f, 2.8f), "점화 시험", "닫힌 삼각형으로 목표물을 태우세요.", new Color(1f, 0.31f, 0.18f)),
-                new StationSpec(SpellFamily.Water, new Vector2(0f, 3.2f), "정화 시험", "둥근 폐합 루프로 불길을 식히세요.", new Color(0.18f, 0.56f, 1f)),
-                new StationSpec(SpellFamily.Wind, new Vector2(5.5f, 2.8f), "흐름 시험", "평행선 3개로 돌기둥을 밀어내세요.", new Color(0.52f, 0.95f, 0.95f)),
+                new StationSpec(SpellFamily.Water, new Vector2(0f, 3.2f), "정화 시험", "둥근 폐합 루프로 불길을 식히세요.", new Color(0.24f, 0.48f, 0.80f)),
+                new StationSpec(SpellFamily.Wind, new Vector2(5.5f, 2.8f), "흐름 시험", "평행선 3개로 돌기둥을 밀어내세요.", new Color(0.44f, 0.72f, 0.74f)),
                 new StationSpec(SpellFamily.Earth, new Vector2(-3.2f, -2.6f), "축조 시험", "닫힌 사다리꼴로 방어벽을 세우세요.", new Color(0.74f, 0.55f, 0.32f)),
                 new StationSpec(SpellFamily.Life, new Vector2(3.2f, -2.6f), "생장 시험", "뿌리와 가지가 있는 Y로 씨앗을 성장시키세요.", new Color(0.35f, 0.86f, 0.42f))
             };
@@ -594,15 +594,39 @@ namespace MagicExamHall
             return button;
         }
 
-        private Image CreateProgressBar(Transform parent)
+        private Image[] CreateProgressPips(Transform parent)
         {
-            var back = CreateImage("Progress Back", parent, new Vector2(16, 14), new Vector2(500, 14), Anchor.BottomLeft, new Color(1f, 1f, 1f, 0.14f));
-            var fill = CreateImage("Progress Fill", back.transform, Vector2.zero, new Vector2(500, 14), Anchor.StretchLeft, new Color(0.18f, 0.95f, 1f, 1f));
-            fill.type = Image.Type.Filled;
-            fill.fillMethod = Image.FillMethod.Horizontal;
-            fill.fillOrigin = (int)Image.OriginHorizontal.Left;
-            fill.fillAmount = 0f;
-            return fill;
+            var pips = new Image[5];
+            for (var index = 0; index < pips.Length; index++)
+            {
+                pips[index] = CreateImage($"Progress Pip {index + 1}", parent, new Vector2(16 + index * 24, 14), new Vector2(14, 14), Anchor.BottomLeft, new Color(1f, 1f, 1f, 0.16f));
+            }
+            return pips;
+        }
+
+        private void UpdateProgressPips()
+        {
+            if (progressPips.Length == 0)
+            {
+                return;
+            }
+
+            var completed = Mathf.Clamp(activeStationIndex, 0, progressPips.Length);
+            for (var index = 0; index < progressPips.Length; index++)
+            {
+                if (index < completed)
+                {
+                    progressPips[index].color = new Color(0.95f, 0.68f, 0.26f, 1f);
+                }
+                else if (index == completed && activeStationIndex < stationViews.Length)
+                {
+                    progressPips[index].color = new Color(0.95f, 0.88f, 0.62f, 0.9f);
+                }
+                else
+                {
+                    progressPips[index].color = new Color(1f, 1f, 1f, 0.16f);
+                }
+            }
         }
 
         private Slider CreateSlider(string name, Transform parent, Vector2 anchoredPosition, Vector2 size, Anchor anchor, float value)
@@ -613,7 +637,7 @@ namespace MagicExamHall
             slider.maxValue = 5f;
             slider.wholeNumbers = true;
             slider.value = value;
-            var fill = CreateImage("Fill", back.transform, Vector2.zero, size, Anchor.Stretch, new Color(0.18f, 0.95f, 1f, 0.8f));
+            var fill = CreateImage("Fill", back.transform, Vector2.zero, size, Anchor.Stretch, new Color(0.95f, 0.68f, 0.26f, 0.82f));
             slider.fillRect = fill.rectTransform;
             var handle = CreateImage("Handle", back.transform, Vector2.zero, new Vector2(18, 26), Anchor.Center, Color.white);
             slider.handleRect = handle.rectTransform;
