@@ -31,7 +31,8 @@
 
 Add screenshots or a short observed flow only when UI/gameplay changed.
 
-## Issue Links
+## Related Issues
 
-Closes #
-Refs #
+- Closes:
+- Related:
+- Follow-up:
