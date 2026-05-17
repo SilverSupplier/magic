@@ -28,7 +28,10 @@ namespace MagicExamHall.Tests
             Assert.That(controller.ActiveGoalCount, Is.EqualTo(5));
             Assert.That(Object.FindFirstObjectByType<Canvas>(), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<EventSystem>(), Is.Not.Null);
-            Assert.That(Object.FindFirstObjectByType<WorldDrawingController>(), Is.Not.Null);
+            var drawing = Object.FindFirstObjectByType<WorldDrawingController>();
+            Assert.That(drawing, Is.Not.Null);
+            Assert.That(drawing.bufferSeconds, Is.EqualTo(WorldDrawingController.DefaultBufferSeconds).Within(0.001f));
+            Assert.That(drawing.minPointDistance, Is.EqualTo(WorldDrawingController.DefaultMinPointDistance).Within(0.001f));
             Assert.That(controller.OutputDirectory, Does.Contain("MagicExamHallLogs"));
         }
 
@@ -48,6 +51,7 @@ namespace MagicExamHall.Tests
             Assert.That(result.spell.status, Is.EqualTo(RecognitionStatus.Recognized));
             Assert.That(result.spell.recognizedFamily, Is.EqualTo(SpellFamily.Fire));
             Assert.That(controller.ActiveSealCount, Is.EqualTo(1));
+            Assert.That(controller.LastSealLifetimeSecondsForTests, Is.EqualTo(SpellRuntime.DefaultSealDurationSeconds).Within(0.001f));
             Assert.That(controller.IsDrawingPanelVisible, Is.False);
             Assert.That(controller.IsResultPanelVisible, Is.False);
         }

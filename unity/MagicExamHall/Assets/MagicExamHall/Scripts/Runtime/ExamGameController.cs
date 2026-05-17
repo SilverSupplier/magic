@@ -55,6 +55,7 @@ namespace MagicExamHall
         public string LastHintText { get; private set; } = "";
         public string LastMagicNoteText => magicNote?.Text ?? "";
         public string OutputDirectory => logger?.OutputDirectory ?? "";
+        public float LastSealLifetimeSecondsForTests => seals.Count == 0 ? 0f : seals[^1].seal.expiresAt - seals[^1].seal.createdAt;
         public IReadOnlyList<OverlayOperator> LastOverlayStack => seals.Count == 0 ? Array.Empty<OverlayOperator>() : seals[^1].seal.overlayStack;
 
         private void Awake()
@@ -184,6 +185,7 @@ namespace MagicExamHall
         {
             worldDrawing = gameObject.GetComponent<WorldDrawingController>() ?? gameObject.AddComponent<WorldDrawingController>();
             worldDrawing.mainCamera = mainCamera;
+            worldDrawing.ApplyPlayableDefaults();
             worldDrawing.SpellBuffered += OnSpellBuffered;
         }
 

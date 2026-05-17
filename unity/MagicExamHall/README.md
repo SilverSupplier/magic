@@ -19,7 +19,7 @@ Magic Exam Hall/Rebuild Demo Scene
 - Move: WASD or arrow keys
 - Draw spell: hold right mouse button on the map floor
 - Cast: release right mouse button
-- Multi-stroke input: start the next stroke within 0.8 seconds
+- Multi-stroke input: start the next stroke within about 1 second
 
 There is no default drawing panel, cast button, or station modal in the playable flow.
 

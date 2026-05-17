@@ -197,6 +197,7 @@ namespace MagicExamHall.Editor
             controller.canvas = canvas;
             var drawing = controllerObject.AddComponent<WorldDrawingController>();
             drawing.mainCamera = camera;
+            drawing.ApplyPlayableDefaults();
         }
 
         private static void SavePrefabs(GameObject player)

@@ -8,9 +8,13 @@ namespace MagicExamHall
 {
     public sealed class WorldDrawingController : MonoBehaviour
     {
+        public const float DefaultBufferSeconds = 1.05f;
+        public const float DefaultMinPointDistance = 0.05f;
+        public const float StrokeVisualLifetimeSeconds = 2.3f;
+
         public Camera mainCamera = null!;
-        public float bufferSeconds = 0.8f;
-        public float minPointDistance = 0.06f;
+        public float bufferSeconds = DefaultBufferSeconds;
+        public float minPointDistance = DefaultMinPointDistance;
         public Color strokeColor = new(0.22f, 0.95f, 1f, 0.92f);
 
         private readonly List<List<StrokeSample>> bufferedStrokes = new();
@@ -23,6 +27,12 @@ namespace MagicExamHall
         public event Action<List<List<StrokeSample>>, Vector2, int> SpellBuffered = delegate { };
 
         public bool HasBufferedInput => bufferedStrokes.Count > 0 || activeStroke.Count > 0;
+
+        public void ApplyPlayableDefaults()
+        {
+            bufferSeconds = DefaultBufferSeconds;
+            minPointDistance = DefaultMinPointDistance;
+        }
 
         private void Awake()
         {
@@ -161,7 +171,7 @@ namespace MagicExamHall
             {
                 var visual = visuals[index];
                 visual.age += Time.deltaTime;
-                var alpha = Mathf.Lerp(0.92f, 0f, visual.age / 1.8f);
+                var alpha = Mathf.Lerp(0.92f, 0f, visual.age / StrokeVisualLifetimeSeconds);
                 var color = new Color(strokeColor.r, strokeColor.g, strokeColor.b, alpha);
                 if (visual.line != null)
                 {
@@ -169,7 +179,7 @@ namespace MagicExamHall
                     visual.line.endColor = color;
                 }
 
-                if (visual.age >= 1.8f)
+                if (visual.age >= StrokeVisualLifetimeSeconds)
                 {
                     if (visual.body != null)
                     {

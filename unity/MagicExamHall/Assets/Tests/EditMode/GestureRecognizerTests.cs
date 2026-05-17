@@ -59,6 +59,15 @@ namespace MagicExamHall.Tests
         }
 
         [Test]
+        public void DefaultSealLifetimeLeavesOverlaySetupTime()
+        {
+            var seal = CreateWorldSeal();
+
+            Assert.That(seal.expiresAt - seal.createdAt, Is.EqualTo(SpellRuntime.DefaultSealDurationSeconds).Within(0.001f));
+            Assert.That(SpellRuntime.DefaultSealDurationSeconds, Is.GreaterThanOrEqualTo(10f));
+        }
+
+        [Test]
         public void OpenTriangleIsIncompleteInsteadOfFalsePositive()
         {
             var stroke = new List<StrokeSample>

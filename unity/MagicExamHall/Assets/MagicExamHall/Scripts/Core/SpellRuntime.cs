@@ -73,6 +73,8 @@ namespace MagicExamHall
 
     public static class SpellRuntime
     {
+        public const float DefaultSealDurationSeconds = 11f;
+
         public static BaseRecognitionResult RecognizeBase(IReadOnlyList<IReadOnlyList<StrokeSample>> strokes)
         {
             var candidates = Enum.GetValues(typeof(SpellFamily))
@@ -93,7 +95,7 @@ namespace MagicExamHall
             };
         }
 
-        public static CompiledSeal CreateSeal(BaseRecognitionResult baseResult, float now, float durationSeconds = 7.5f)
+        public static CompiledSeal CreateSeal(BaseRecognitionResult baseResult, float now, float durationSeconds = DefaultSealDurationSeconds)
         {
             return new CompiledSeal
             {
